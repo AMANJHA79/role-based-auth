@@ -4,6 +4,7 @@ const connectToDb =require('./database/db');
 const authRoutes = require('./routes/auth-routes');
 const HomeRouter = require('./routes/home-routes')
 const adminrouter = require('./routes/admin-routes')
+const imageRouter = require('./routes/image-routes')
 
 
 
@@ -20,6 +21,7 @@ app.get('/', (req, res) => {
 app.use('/api', authRoutes );
 app.use('/api', HomeRouter );
 app.use('/api', adminrouter );
+app.use('/api/image', imageRouter );
 
 
 const connectserver=async()=>{
