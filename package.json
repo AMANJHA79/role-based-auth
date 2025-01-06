@@ -1,9 +1,10 @@
 {
   "name": "nodej-auth",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "server.js",
+    "build":"npm install",
+    "start": "node server.js",
     "dev": "nodemon server.js"
   },
   "keywords": [],
