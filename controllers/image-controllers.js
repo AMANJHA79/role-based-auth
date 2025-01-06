@@ -57,40 +57,45 @@ const uploadImageController= async (req, res) => {
 }
 
 
-const fetchImageController = async (req,res)=>{
-    try{
+const fetchImageController = async (req, res) => {
+    try {
+        // Pagination
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
 
-        //pagination 
-        const page= parseInt(req.query.page) || 1;
-        const limit= parseInt(req.query.limit) || 10;
-        const skip= (page - 1) * limit;
+        // Sorting
+        const sort = req.query.sort || '-createdAt';
+        const sortOrder = req.query.sortOrder === 'asc' ? 1 : -1;
+        const totalImages = await Image.countDocuments();
 
-        //sorting
-
-        const sort= req.query.sort || '-createdAt';
-        const sortOrder=req.query.sortOrder ==='asc' ? 1:-1;
-        const totalImages= await Image.countDocuments();
-        const totalPages= Math.ceil(totalImages / limit);
-
-        const sortObj={};
-        sortObj[sort]=sortOrder;
-        const images = await Image.find().sort(sortObj).skip(skip).limit(limit);
-
-
-        if (images){
-            res.status(200).json({
+        // Handle zero totalImages
+        if (totalImages === 0) {
+            return res.status(200).json({
                 success: true,
-                message: 'Images fetched successfully',
+                message: 'No images found',
                 currentPage: page,
-                totalPages,
-                totalImages,
-                images
-                
+                totalPages: 0,
+                totalImages: 0,
+                images: []
             });
         }
 
-    }
-    catch(error){
+        const totalPages = Math.ceil(totalImages / limit);
+        const sortObj = {};
+        sortObj[sort] = sortOrder;
+        const images = await Image.find().sort(sortObj).skip(skip).limit(limit);
+
+        res.status(200).json({
+            success: true,
+            message: 'Images fetched successfully',
+            currentPage: page,
+            totalPages,
+            totalImages,
+            images
+        });
+
+    } catch (error) {
         console.error('Error in fetchImageController:', error.message);
         res.status(500).json({ success: false, message: 'Server Error', error: error.message });
     }
