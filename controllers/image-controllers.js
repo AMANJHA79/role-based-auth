@@ -140,4 +140,3 @@ module.exports= {
     fetchImageController,
     deleteImageController
 }
-
